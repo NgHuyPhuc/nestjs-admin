@@ -7,6 +7,10 @@ import { Model } from 'mongoose';
 import { hashPasswordHelper } from 'src/helpers/util';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
+import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
+import { v4 as uuidv4 } from 'uuid';
+// import dayjs from 'dayjs';
+import * as dayjs from 'dayjs'
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name)
@@ -78,5 +82,25 @@ export class UsersService {
       throw new BadRequestException("id khong hop le")
     }
   }
-  
+  async handleRegister(registerDto : CreateAuthDto)
+  {
+    const { name, email, password } = registerDto;
+    //check mail
+    const isExist = await this.isEmailExist(email);
+    if (isExist) {
+      throw new BadRequestException(`Email already exists: ${email}.`);
+    }
+    const hasPassword = await hashPasswordHelper(registerDto.password);
+    const user = await this.UserModel.create({
+      name, email, password: hasPassword, 
+      isActive: false, 
+      codeId: uuidv4(),
+      codeExpired: dayjs().add(10,'minute'),
+    })
+    // send email
+
+    return {
+      _id: user._id,
+    }
+  }
 }
