@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* Đảm bảo không gian xung quanh */
+            padding: 20px;
+            flex-wrap: nowrap;
+            text-align: center;
+        }
+
+        /* Định dạng cho các cột */
+        .col {
+            flex: 1;
+            text-align: center;
+            margin-left: 30px;
+        }
+
+        .col .a {
+            align-self: center;
+
+        }
+
+        /* Nút button xanh (primary) */
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            align-self: center;
+            white-space: nowrap;
+            width: 80%;
+        }
+
+        /* Nút button đỏ (danger) */
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            align-self: center;
+            white-space: nowrap;
+            width: 80%;
+        }
+
+        /* Hình ảnh kích thước phù hợp */
+        .image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            width: 240px;
+        }
+    </style>
+</head>
+
+<body>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
+        style="background-color:transparent;width:100%">
+        <tbody>
+            <h1 style="text-align: center;align-items: center;">Lựa chọn đi VKIEN</h1>
+            <tr>
+                <td style="align-self: center" class="col">
+                    <a style="align-self: center" target="_blank" href="https://tinyurl.com/3uzxnb5z"
+                        class="btn-primary">Bấm vào nút này</a>
+                </td>
+
+                <td class="col">
+                    <img src="https://scontent.fhan14-2.fna.fbcdn.net/v/t1.15752-9/457128086_1674806586634994_8611414774261057800_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeHMNCBUjBdOOXj8fZx4Ojzvp2yMiJmWOKKnbIyImZY4omYtFITMcdRtJYecCMth7vtdaC-gZ_Npqg_i5UcEVTmw&_nc_ohc=tdt4JLggR1kQ7kNvgES_lr3&_nc_ht=scontent.fhan14-2.fna&oh=03_Q7cD1QE42f-rsw6WNdAv4C6SUPD6GuOX_U4TWkvzLOiC_RYh6w&oe=66FAAE9A"
+                        alt="Image" class="image">
+                </td>
+                <td style="align-self: center" class="col">
+                    <a style="align-self: center" target="_blank" href="https://tinyurl.com/rppjbjk9"
+                        class="btn-danger">Đừng bấm vào nút này</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

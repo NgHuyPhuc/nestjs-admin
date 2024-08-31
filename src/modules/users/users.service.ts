@@ -11,10 +11,14 @@ import { CreateAuthDto } from 'src/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 // import dayjs from 'dayjs';
 import * as dayjs from 'dayjs'
+import { MailerService } from '@nestjs-modules/mailer';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name)
-  private UserModel: Model<User>) { }
+  private UserModel: Model<User>,
+  private readonly mailerService: MailerService
+
+) { }
 
   isEmailExist = async (email: string) => {
     const user = await this.UserModel.exists({ email: email });
@@ -91,14 +95,24 @@ export class UsersService {
       throw new BadRequestException(`Email already exists: ${email}.`);
     }
     const hasPassword = await hashPasswordHelper(registerDto.password);
+    const codeId = uuidv4();
     const user = await this.UserModel.create({
       name, email, password: hasPassword, 
       isActive: false, 
-      codeId: uuidv4(),
+      codeId: codeId,
       codeExpired: dayjs().add(10,'minute'),
     })
     // send email
-
+    this.mailerService.sendMail({
+      to: user.email,
+      // from: 'noreply@nestjs.com', // sender address
+      subject: 'Active account ✔', // Subject line
+      template: 'register',
+      context: {
+        name: user?.name ?? user.email,
+        activationCode: codeId,
+      }
+    });
     return {
       _id: user._id,
     }
