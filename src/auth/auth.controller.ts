@@ -5,8 +5,9 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './passport/jwt-auth-guard';
 import { LocalAuthGuard } from './passport/local-auth.guard';
-import { Public } from 'src/decorator/customize';
+import { Public, ResponeMessage } from 'src/decorator/customize';
 import { MailerService } from '@nestjs-modules/mailer';
+import { CheckCode } from './dto/check-code.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +24,7 @@ export class AuthController {
   @Post('login')
   @Public()
   @UseGuards(LocalAuthGuard)
+  @ResponeMessage('fetch login')
   handleLogin(@Request() req){
     return this.authService.login(req.user);
   }
@@ -39,21 +41,30 @@ export class AuthController {
     return this.authService.handleRegister(registerDto);
   }
 
+  @Post('check-code')
+  @Public()
+  checkcode(@Body() checkCodeDto : CheckCode) {
+    console.log("🚀 ~ AuthController ~ checkcode ~ checkCodeDto:", checkCodeDto)
+    
+    return this.authService.handleCheckCode(checkCodeDto);
+  }
+
   @Get('mail')
   @Public()
   mail() {
     this.mailerService
       .sendMail({
-        to: 'sumasa05@gmail.com', // list of receivers
+        to: 'nkien6962@gmail.com', // list of receivers
+        // to: 'sumasa05@gmail.com', // list of receivers
         // from: 'noreply@nestjs.com', // sender address
         subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
+        // text: 'welcome', // plaintext body
         // html: '<b>Hello world</b>', // HTML body content
         template: 'newtemp',
-        context: {
-          name: 'test',
-          activationCode: 'asdadgads',
-        }
+        // context: {
+        //   name: 'test',
+        //   activationCode: 'asdadgads',
+        // }
       })
     return 'ok mail';
   }

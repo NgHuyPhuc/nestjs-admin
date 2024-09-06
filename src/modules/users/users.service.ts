@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 // import dayjs from 'dayjs';
 import * as dayjs from 'dayjs'
 import { MailerService } from '@nestjs-modules/mailer';
+import { CheckCode } from 'src/auth/dto/check-code.dto';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name)
@@ -115,6 +116,22 @@ export class UsersService {
     });
     return {
       _id: user._id,
+    }
+  }
+  async handleUserCheckCode(checkCodeDto : CheckCode){
+    const {id , code} = checkCodeDto;
+    const user = await this.UserModel.findById(id);
+    const isBeforCheck = dayjs().isBefore(user.codeExpired);
+    if(!user)
+    {
+      throw new BadRequestException('Tài khoản không chính xác')
+    }
+    else if(isBeforCheck && user.codeId === code){
+      await this.UserModel.updateOne({_id:id},{isActive:true});
+      return {isActive:true}
+    }
+    else {
+      throw new BadRequestException('Code sai hoặc đã hết hạn')
     }
   }
 }
