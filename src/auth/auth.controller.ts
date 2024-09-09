@@ -8,6 +8,7 @@ import { LocalAuthGuard } from './passport/local-auth.guard';
 import { Public, ResponeMessage } from 'src/decorator/customize';
 import { MailerService } from '@nestjs-modules/mailer';
 import { CheckCode } from './dto/check-code.dto';
+import { ChangePassword } from './dto/change-pass.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -55,6 +56,22 @@ export class AuthController {
     console.log("🚀 ~ AuthController ~ Resend:", email)
     
     return this.authService.reSendEmail(email);
+  }
+
+  @Post('retry-password')
+  @Public()
+  reTryPassword(@Body("email") email : string) {
+    console.log("🚀 ~ AuthController ~ Resend:", email)
+    
+    return this.authService.reTryPassword(email);
+  }
+
+  @Post('change-password')
+  @Public()
+  changePassword(@Body() changePasswordDto : ChangePassword) {
+    console.log("🚀 ~ AuthController ~ Resend:", changePasswordDto)
+    
+    return this.authService.changePassword(changePasswordDto);
   }
 
   @Get('mail')

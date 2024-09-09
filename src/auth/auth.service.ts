@@ -5,6 +5,7 @@ import { comparePasswordHelper } from 'src/helpers/util';
 import { UsersService } from 'src/modules/users/users.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { CheckCode } from './dto/check-code.dto';
+import { ChangePassword } from './dto/change-pass.dto';
 
 @Injectable()
 export class AuthService {
@@ -56,4 +57,11 @@ export class AuthService {
   async reSendEmail(email : string ) {
     return await this.usersService.handleUserReSendCode(email);
   }
+  async reTryPassword(email : string ) {
+    return await this.usersService.handleUserReTryPassword(email);
+  }
+  async changePassword(changePasswordDto : ChangePassword ) {
+    return await this.usersService.handleChangePassword(changePasswordDto);
+  }
+  
 }

@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dayjs from 'dayjs'
 import { MailerService } from '@nestjs-modules/mailer';
 import { CheckCode } from 'src/auth/dto/check-code.dto';
+import { ChangePassword } from 'src/auth/dto/change-pass.dto';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name)
@@ -170,4 +171,64 @@ export class UsersService {
       _id: user._id,
     }
   }
+  async handleUserReTryPassword(email : string){
+    console.log("🚀 ~ UsersService ~ handleUserReSendCode ~ email:", email)
+    // const {id , code} = checkCodeDto;
+    const user = await this.UserModel.findOne({email});
+    if(!user)
+    {
+      throw new BadRequestException('Tài khoản không tồn tại')
+    }
+
+    const codeId = uuidv4();
+    await user.updateOne({
+      codeId: codeId,
+      codeExpired: dayjs().add(10,'minute'),
+    })
+    this.mailerService.sendMail({
+      to: user.email,
+      // from: 'noreply@nestjs.com', // sender address
+      subject: 'Change password', // Subject line
+      template: 'register',
+      context: {
+        name: user?.name ?? user.email,
+        activationCode: codeId,
+      }
+    });
+    return {
+      _id: user._id,
+      email: user.email,
+    }
+  }
+  async handleChangePassword(changePassword : ChangePassword){
+    console.log("🚀 ~ UsersService ~ handleUserReSendCode ~ email:", changePassword)
+    const {id , code, email, password, confirmPassword} = changePassword;
+
+    if(password !== confirmPassword)
+    {
+      throw new BadRequestException('Mật khẩu và mật khẩu nhập lại không chính xác')
+    }
+    const user = await this.UserModel.findOne({email});
+    const isBeforCheck = dayjs().isBefore(user.codeExpired);
+    if(!user)
+    {
+      throw new BadRequestException('Tài khoản không tồn tại')
+    }
+
+    else if(isBeforCheck && user.codeId === code){
+      const hasPassword = await hashPasswordHelper(password);
+      await user.updateOne({password:hasPassword});
+      // return {isActive:true}
+    }
+    else {
+      throw new BadRequestException('Code sai hoặc đã hết hạn')
+    }
+
+    return {
+      _id: user._id,
+      email: user.email,
+    }
+  }
+
+  
 }
