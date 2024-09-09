@@ -15,4 +15,8 @@ export class UpdateUserDto{
     address: string;
     @IsOptional()
     image: string;
+
+    @IsOptional()
+    password: string;
+
 }

@@ -24,13 +24,14 @@ export class UsersController {
     @Query("current") current: string,
     @Query("pagesize") pagesize: string,
   ) {
-    // console.log(query);
+    // console.log('find all');
     return this.usersService.findAll(query, +current, +pagesize);
   }
 
-  @Get(':id')
+  @Get('by-id/:id')
+  @Public()
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOne(id);
   }
 
   @Get(':email')

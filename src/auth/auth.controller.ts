@@ -49,6 +49,14 @@ export class AuthController {
     return this.authService.handleCheckCode(checkCodeDto);
   }
 
+  @Post('resend-code')
+  @Public()
+  reSend(@Body("email") email : string) {
+    console.log("🚀 ~ AuthController ~ Resend:", email)
+    
+    return this.authService.reSendEmail(email);
+  }
+
   @Get('mail')
   @Public()
   mail() {

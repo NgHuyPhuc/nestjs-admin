@@ -53,4 +53,7 @@ export class AuthService {
   async handleCheckCode(checkCodeDto : CheckCode ) {
     return await this.usersService.handleUserCheckCode(checkCodeDto);
   }
+  async reSendEmail(email : string ) {
+    return await this.usersService.handleUserReSendCode(email);
+  }
 }

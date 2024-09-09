@@ -66,8 +66,8 @@ export class UsersService {
     return { result, totalPages };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    return await this.UserModel.findById(id);
   }
 
   async findByEmail(email: string) {
@@ -75,6 +75,9 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password) {
+      updateUserDto.password = await hashPasswordHelper(updateUserDto.password);
+    }
     return await this.UserModel.updateOne(
       { _id: updateUserDto }, { ...updateUserDto });
   }
@@ -132,6 +135,39 @@ export class UsersService {
     }
     else {
       throw new BadRequestException('Code sai hoặc đã hết hạn')
+    }
+  }
+
+  async handleUserReSendCode(email : string){
+    console.log("🚀 ~ UsersService ~ handleUserReSendCode ~ email:", email)
+    // const {id , code} = checkCodeDto;
+    const user = await this.UserModel.findOne({email});
+    if(!user)
+    {
+      throw new BadRequestException('Tài khoản không tồn tại')
+    }
+    if(user.isActive)
+    {
+      throw new BadRequestException('Tài khoản đã được kích hoạt')
+    }
+
+    const codeId = uuidv4();
+    await user.updateOne({
+      codeId: codeId,
+      codeExpired: dayjs().add(10,'minute'),
+    })
+    this.mailerService.sendMail({
+      to: user.email,
+      // from: 'noreply@nestjs.com', // sender address
+      subject: 'Active account ✔', // Subject line
+      template: 'register',
+      context: {
+        name: user?.name ?? user.email,
+        activationCode: codeId,
+      }
+    });
+    return {
+      _id: user._id,
     }
   }
 }
