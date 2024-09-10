@@ -63,8 +63,16 @@ export class UsersService {
       .skip(skip)
       .select('-password')
       .sort(sort as any);
-    // return `This action returns all users`;
-    return { result, totalPages };
+    return {
+      meta: {
+        current: current, //trang hiện tại
+        pageSize: pagesize, //số lượng bản ghi đã lấy
+        pages: totalPages,  //tổng số trang với điều kiện query
+        total: totalItem // tổng số phần tử (số bản ghi)
+      },
+      result //kết quả query
+    }
+
   }
 
   async findOne(id: string) {
