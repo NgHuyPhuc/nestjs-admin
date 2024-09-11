@@ -14,6 +14,7 @@ import * as dayjs from 'dayjs'
 import { MailerService } from '@nestjs-modules/mailer';
 import { CheckCode } from 'src/auth/dto/check-code.dto';
 import { ChangePassword } from 'src/auth/dto/change-pass.dto';
+import { UpdateUserImageDto } from './dto/update-user-img.dto';
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name)
@@ -90,7 +91,10 @@ export class UsersService {
     return await this.UserModel.updateOne(
       { _id: updateUserDto }, { ...updateUserDto });
   }
-
+  async updateimg(id : string, filename: string){
+    return await this.UserModel.updateOne(
+      { _id: id }, { image: filename });
+  }
   async remove(_id: string) {
     if (mongoose.isValidObjectId(_id)) {
       return await this.UserModel.findByIdAndDelete({_id});

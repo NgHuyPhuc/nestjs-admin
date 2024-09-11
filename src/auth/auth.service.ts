@@ -20,7 +20,7 @@ export class AuthService {
     if (!isvalidpassword) {
       throw new UnauthorizedException("Username/Password khong hop le");
     }
-    const payload = { sub: user._id, username: user.email };
+    const payload = { _id: user._id, username: user.email };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
@@ -36,7 +36,7 @@ export class AuthService {
   }
   
   async login(user: any) {      
-    const payload = { username: user.email, sub: user._id };
+    const payload = { username: user.email, _id: user._id };
     // console.log(this.jwtService.sign(payload));
     return {
       user: {

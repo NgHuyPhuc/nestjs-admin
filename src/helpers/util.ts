@@ -1,3 +1,6 @@
+import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import { diskStorage } from 'multer';
+
 const bcrypt =  require('bcrypt');
 const saltRounds = 10;
 
@@ -15,3 +18,10 @@ export const comparePasswordHelper = async(plainPassword: string, hashpassword: 
         console.log(error);
     }
 }
+
+export const storageCongig = (folder: string) => diskStorage ({
+    destination: `uploads/${folder}`,
+    filename:(req ,file, callback)=>{
+        callback(null, Date.now() + '-' + file.originalname)
+    }
+})
